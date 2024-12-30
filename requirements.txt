@@ -1,0 +1,5 @@
+darts == 0.32.0
+pytrends == 4.9.2
+pandas == 2.2.2
+numpy == 1.26.4
+matplotlib == 3.8.0
