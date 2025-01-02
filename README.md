@@ -65,6 +65,8 @@ The script generates:
 
 ### Dependencies
 
+Python v3.10.12
+
 The script uses the following libraries:
 
 darts == 0.32.0
