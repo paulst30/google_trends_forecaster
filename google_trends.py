@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from darts.metrics import mape
 from darts.models import ExponentialSmoothing, TBATS, AutoARIMA, Prophet
 import argparse
+import sys
 
 # functions
 
@@ -27,7 +28,8 @@ def get_data(keyword, cat):
 
     except Exception as e:
       if run == 4:
-         break
+         print("Google keeps rejecting us")
+         sys.exit()
       print('Google is rejecting us...')
       print('Retrying in', wait[run], 'seconds...')
       time.sleep(wait[run])
