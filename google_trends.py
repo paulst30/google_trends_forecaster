@@ -104,7 +104,16 @@ def model_prediction(trained_model):
   return forecast
 
 # generate output files (csv and graphs)
-def gen_output(data, forecast, residuals):
+def gen_output(data, forecast, residuals, performances):
+
+  # harmonize indexes
+  data = data.copy()
+  data.index = pd.to_datetime(data.index)
+  data = data.asfreq('W-SUN')
+  forecast.index = pd.to_datetime(forecast.index)
+  residuals.index = pd.to_datetime(residuals.index)
+
+  # merge output
   output = pd.concat([data, forecast, residuals], axis=1)
   output.columns =['series', 'forecast', 'residuals']
   output.index.name = 'date'
@@ -112,6 +121,12 @@ def gen_output(data, forecast, residuals):
 
   # save output as csv
   output.to_csv('output.csv', index=True)
+
+  
+  # save performances
+  performances = pd.DataFrame(performances, index=['MAPE']).T
+  performances.index.name = 'model'
+  performances.to_csv('performances.csv', index=True)
 
   # generate graphs
   fig, axs = plt.subplots(3, 2, figsize=(15, 20))
@@ -152,10 +167,11 @@ def gen_output(data, forecast, residuals):
 #### Main function
 
 # main function
-def main(keyword, cat, models, split_date):
+def main(keyword, cat, models, split_date, data = None):
     # Step 1: Download data
-    print('Downloading data...')
-    data = get_data(keyword, cat)
+    if data is None:
+      print('Downloading data...')
+      data = get_data(keyword, cat)
 
     # Step 2: Data preparation
     print('Preparing data...')
@@ -171,7 +187,7 @@ def main(keyword, cat, models, split_date):
     forecast = model_prediction(trained_model=trained_model)
 
     # Step 5: generate output files
-    gen_output(data, forecast, residuals)
+    gen_output(data, forecast, residuals, performances)
 
 ## direct script call
 if __name__ == "__main__":
